@@ -16,9 +16,9 @@ export async function getUsers(){
 };
 
 export async function getUser(id) {
-    const user = await db.query(`select * from USERS where user_id = ${id}`)
-    return user[0]
-};
+    const user = await db.query(`SELECT * FROM USERS WHERE user_id = ${id}`);
+    return user[0];
+}
 
 export async function createUser(name, email, password) {
     const result = await db.query(`INSERT INTO USERS (name, email, password) VALUES ("${name}", "${email}", "${password}")`);
@@ -79,3 +79,12 @@ export async function getCart(order_id){
 
     return cart[0];
 }
+
+export async function placeOrder(user_id, total_amount) {
+    const result = await db.query(`
+        INSERT INTO ORDERS (user_id, total_amount, status)
+        VALUES (${user_id}, ${total_amount}, 'processing')
+    `);
+    return result[0];
+}
+

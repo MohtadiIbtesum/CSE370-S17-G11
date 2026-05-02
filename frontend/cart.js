@@ -75,3 +75,4 @@ function renderTotal() {
 
 
 renderCart();
+

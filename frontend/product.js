@@ -6,7 +6,7 @@ fetch(`http://localhost:3100/products/${id}`)
     const product = data.product[0];
 
     document.getElementById("name").innerText = product.product_name;
-    document.getElementById("price").innerText = "Price: $" + product.price;
+    document.getElementById("price").innerText = "Price: " + product.price;
 
     const specList = document.getElementById("specs");
 
