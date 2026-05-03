@@ -57,11 +57,15 @@ app.post('/products', async (req, res) => {
 // delete product
 app.delete('/products/:id', async (req, res) => {
   try {
-    const result = await deleteProduct(req.params.id);
-    res.json(result);
+    const id = req.params.id;
+    console.log("Deleting product:", id);
+
+    const result = await deleteProduct(id);
+
+    res.send(result);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.error("DELETE ERROR:", err);
+    res.status(500).send(err.message);
   }
 });
 
@@ -97,7 +101,7 @@ app.get('/builder/:category_id', async (req, res) => {
   }
 });
 
-// ---------------- COMPATIBILITY ENGINE ----------------
+
 
 app.post('/check-compatibility', async (req, res) => {
   try {

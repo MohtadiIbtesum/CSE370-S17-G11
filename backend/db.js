@@ -61,16 +61,23 @@ export async function getProduct(id){
 
 // ================= ADMIN PRODUCTS =================
 
-export async function createProduct(name, price, stock, brand_id, category_id){
+export async function createProduct(name, price, stock, brand_id, category_id) {
+
+    const [rows] = await db.query(`
+        SELECT MAX(product_id) AS maxId FROM PRODUCTS
+    `);
+
+    const nextId = (rows[0].maxId || 0) + 1;
+
     const result = await db.query(`
         INSERT INTO PRODUCTS 
-        (product_name, price, stock_qty, date_added, brand_id, category_id)
-        VALUES ("${name}", ${price}, ${stock}, NOW(), ${brand_id}, ${category_id})
+        (product_id, product_name, price, stock_qty, date_added, brand_id, category_id)
+        VALUES 
+        (${nextId}, "${name}", ${price}, ${stock}, NOW(), ${brand_id}, ${category_id})
     `);
 
     return result[0];
 }
-
 
 export async function readAllProduct() {
     const products = await db.query(`
@@ -118,14 +125,6 @@ export async function updateProduct(product_id, name, price, stock, brand_id, ca
 // ================= DELETE PRODUCT =================
 
 export async function deleteProduct(product_id){
-
-    await db.query(`
-        DELETE FROM ORDER_PRODUCTS WHERE product_id = ${product_id}
-    `);
-
-    await db.query(`
-        DELETE FROM BUILD_INCLUDES WHERE product_id = ${product_id}
-    `);
 
     const result = await db.query(`
         DELETE FROM PRODUCTS WHERE product_id = ${product_id}
