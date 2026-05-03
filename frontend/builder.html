@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PC Builder</title>
+</head>
+<body>
+
+<h1>PC Builder / Shop</h1>
+
+<!-- FILTER -->
+<h2>Filter by Category</h2>
+<select id="categoryFilter" onchange="loadProducts()">
+  <option value="all">All</option>
+  <option value="1">CPU</option>
+  <option value="2">GPU</option>
+  <option value="3">Motherboard</option>
+  <option value="4">RAM</option>
+  <option value="5">Storage</option>
+  <option value="6">PSU</option>
+  <option value="7">Case</option>
+</select>
+
+<hr>
+
+<!-- PRODUCTS -->
+<h2>Products</h2>
+<div id="products"></div>
+
+<hr>
+
+<!-- CART -->
+<h2>Cart</h2>
+<div id="cart"></div>
+<h3>Total: ৳ <span id="total">0</span></h3>
+
+<hr>
+
+<!-- PC BUILDER SECTION -->
+<h2>PC Builder Selection</h2>
+
+<label>CPU:</label>
+<select id="cpu"></select>
+<br><br>
+
+<label>Motherboard:</label>
+<select id="motherboard"></select>
+<br><br>
+
+<label>RAM:</label>
+<select id="ram"></select>
+<br><br>
+
+<label>GPU:</label>
+<select id="gpu"></select>
+<br><br>
+
+<button onclick="checkCompatibility()">Check Compatibility</button>
+
+<h3 id="result"></h3>
+
+<script src="builder.js"></script>
+
+</body>
+</html>

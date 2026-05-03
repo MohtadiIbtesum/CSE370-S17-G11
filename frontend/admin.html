@@ -1,11 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Admin Panel</title>
 </head>
 <body>
-    
+
+<h1>Admin Panel</h1>
+
+<h2>Add Product</h2>
+<form id="productForm">
+  <input type="text" id="name" placeholder="Name"><br>
+  <input type="number" id="price" placeholder="Price"><br>
+  <input type="number" id="stock" placeholder="Stock"><br>
+  <input type="number" id="brand_id" placeholder="Brand ID"><br>
+  <input type="number" id="category_id" placeholder="Category ID"><br>
+  <button type="submit">Add</button>
+</form>
+<h2>Edit Product</h2>
+
+<form id="editForm">
+  <input type="hidden" id="edit_id">
+
+  <input type="text" id="edit_name" placeholder="Name"><br>
+  <input type="number" id="edit_price" placeholder="Price"><br>
+  <input type="number" id="edit_stock" placeholder="Stock"><br>
+  <input type="number" id="edit_brand_id" placeholder="Brand ID"><br>
+  <input type="number" id="edit_category_id" placeholder="Category ID"><br>
+
+  <button type="submit">Update Product</button>
+</form>
+
+<hr>
+<hr>
+
+<h2>Products</h2>
+<button onclick="loadProducts()">Refresh</button>
+
+<div id="products"></div>
+
+<script src="admin.js"></script>
+
 </body>
 </html>

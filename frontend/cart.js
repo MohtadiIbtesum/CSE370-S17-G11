@@ -14,7 +14,7 @@ function renderCart() {
 
     div.innerHTML = `
       <h3>${item.product_name}</h3>
-      <p>Price: $${item.price}</p>
+      <p>Price: ৳ ${item.price}</p>
 
       <button onclick="decrease(${item.product_id})">-</button>
       <span>${item.quantity}</span>
@@ -68,7 +68,7 @@ function renderTotal() {
   }, 0);
 
   const totalDiv = document.createElement("div");
-  totalDiv.innerHTML = `<h2>Total: $${total.toFixed(2)}</h2>`;
+  totalDiv.innerHTML = `<h2>Total: ৳ ${total.toFixed(2)}</h2>`;
 
   container.appendChild(totalDiv);
 }

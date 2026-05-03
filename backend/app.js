@@ -1,57 +1,168 @@
 import express from 'express';
-import {getUser, getUsers, createUser, getProduct,getProducts,createProduct} from './db.js';
 import cors from 'cors';
+
+import {
+  getUser,
+  getUsers,
+  createUser,
+  getProduct,
+  getProducts,
+  createProduct,
+  deleteProduct,
+  updateProduct,
+  getProductsByCategory
+} from './db.js';
 
 const app = express();
 const PORT = 3100;
 
 app.use(cors());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
-});
-
-// user routes
+// ---------------- USERS ----------------
 
 app.get('/users', async (req, res) => {
   const users = await getUsers();
-  res.send(users);
+  res.json(users);
 });
 
 app.post('/create-user', async (req, res) => {
   const { name, email, password } = req.body;
   const result = await createUser(name, email, password);
-  res.send(result);
+  res.json(result);
 });
 
-// product routes
+// ---------------- PRODUCTS ----------------
 
+// all products
 app.get('/products', async (req, res) => {
   const products = await getProducts();
-  res.send(products);
+  res.json(products);
 });
 
+// single product + specs
 app.get('/products/:id', async (req, res) => {
-  const id = req.params.id;
-  const product = await getProduct(id);
-  res.send(product);
+  const product = await getProduct(req.params.id);
+  res.json(product);
 });
 
-app.post('/create-product', async (req, res) => {
+// create product
+app.post('/products', async (req, res) => {
   const { name, price, stock, brand_id, category_id } = req.body;
   const result = await createProduct(name, price, stock, brand_id, category_id);
-  res.send(result);
+  res.json(result);
 });
 
+// delete product
+app.delete('/products/:id', async (req, res) => {
+  try {
+    const result = await deleteProduct(req.params.id);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// update product
+app.put('/products/:id', async (req, res) => {
+  try {
+    const { name, price, stock, brand_id, category_id } = req.body;
+
+    const result = await updateProduct(
+      req.params.id,
+      name,
+      price,
+      stock,
+      brand_id,
+      category_id
+    );
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------- BUILDER ----------------
+
+app.get('/builder/:category_id', async (req, res) => {
+  try {
+    const products = await getProductsByCategory(req.params.category_id);
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------- COMPATIBILITY ENGINE ----------------
+
+app.post('/check-compatibility', async (req, res) => {
+  try {
+    const { cpu_id, motherboard_id, ram_id, gpu_id } = req.body;
+
+    const cpu = await getProduct(cpu_id);
+    const mobo = await getProduct(motherboard_id);
+    const ram = await getProduct(ram_id);
+    const gpu = await getProduct(gpu_id);
+
+    let issues = [];
+
+    // CPU ↔ Motherboard
+    if (cpu.specs.socket !== mobo.specs.socket) {
+      issues.push("CPU socket does not match motherboard");
+    }
+
+    // RAM ↔ Motherboard
+    if (ram.specs.ram_type !== mobo.specs.ram_type) {
+      issues.push("RAM type not supported by motherboard");
+    }
+
+    // Power check
+    const totalTdp =
+      Number(cpu.specs.tdp || 0) +
+      Number(gpu.specs.tdp || 0);
+
+    if (totalTdp > 500) {
+      issues.push("High power consumption (check PSU)");
+    }
+
+    if (issues.length === 0) {
+      res.json({
+        compatible: true,
+        message: "All components compatible"
+      });
+    } else {
+      res.json({
+        compatible: false,
+        issues
+      });
+    }
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------- ADMIN ----------------
 
 app.get('/admin', (req, res) => {
   res.send('Admin dashboard');
 });
 
+app.get('/admin/orders', (req, res) => {
+  res.send('Admin orders');
+});
+
+// ---------------- ERROR HANDLER ----------------
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

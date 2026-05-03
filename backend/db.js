@@ -1,19 +1,20 @@
 import mysql from 'mysql2';
 
 const db = mysql.createPool({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
   password: "",
-  database: "PC_STORE"
+  database: "PC_STORE",
+  port: 3306
 }).promise();
 
 
+// ================= USERS =================
 
-// User functions
 export async function getUsers(){
-    const users = await db.query("SELECT * FROM USERS")
-    return users[0]
-};
+    const users = await db.query("SELECT * FROM USERS");
+    return users[0];
+}
 
 export async function getUser(id) {
     const user = await db.query(`SELECT * FROM USERS WHERE user_id = ${id}`);
@@ -21,53 +22,133 @@ export async function getUser(id) {
 }
 
 export async function createUser(name, email, password) {
-    const result = await db.query(`INSERT INTO USERS (name, email, password) VALUES ("${name}", "${email}", "${password}")`);
+    const result = await db.query(`
+        INSERT INTO USERS (name, email, password)
+        VALUES ("${name}", "${email}", "${password}")
+    `);
     return result[0];
 }
 
-// product functions
+
+// ================= PRODUCTS =================
+
 export async function getProducts(){
     const products = await db.query("SELECT * FROM PRODUCTS");
     return products[0];
 }
 
 export async function getProduct(id){
+
     const product = await db.query(
         `SELECT * FROM PRODUCTS WHERE product_id = ${id}`
     );
 
     const specs = await db.query(
-        `SELECT * FROM SPECIFICATIONS WHERE product_id = ${id}`
+        `SELECT spec_name, spec_value FROM SPECIFICATIONS WHERE product_id = ${id}`
     );
 
+    const specMap = {};
+    specs[0].forEach(s => {
+        specMap[s.spec_name] = s.spec_value;
+    });
+
     return {
-        product: product[0],
-        specs: specs[0]
+        product: product[0][0],
+        specs: specMap
     };
 }
 
-// admin product add function
+
+// ================= ADMIN PRODUCTS =================
+
 export async function createProduct(name, price, stock, brand_id, category_id){
     const result = await db.query(`
         INSERT INTO PRODUCTS 
         (product_name, price, stock_qty, date_added, brand_id, category_id)
-        VALUES 
-        ("${name}", ${price}, ${stock}, NOW(), ${brand_id}, ${category_id})
+        VALUES ("${name}", ${price}, ${stock}, NOW(), ${brand_id}, ${category_id})
     `);
 
     return result[0];
 }
 
 
-// cart functions
-export async function addToCart(order_id, product_id, quantity){
+export async function readAllProduct() {
+    const products = await db.query(`
+        SELECT p.product_id, p.product_name, p.price, p.stock_qty,
+               b.brand_name, c.category_name
+        FROM PRODUCTS p
+        JOIN BRANDS b ON p.brand_id = b.brand_id
+        JOIN CATEGORIES c ON p.category_id = c.category_id
+    `);
+
+    return products[0];
+}
+
+export async function readProductById(product_id) {
+    const product = await db.query(`
+        SELECT p.product_id, p.product_name, p.price, p.stock_qty,
+               b.brand_name, c.category_name
+        FROM PRODUCTS p
+        JOIN BRANDS b ON p.brand_id = b.brand_id
+        JOIN CATEGORIES c ON p.category_id = c.category_id
+        WHERE p.product_id = ${product_id}
+    `);
+
+    return product[0];
+}
+
+
+// ================= UPDATE =================
+
+export async function updateProduct(product_id, name, price, stock, brand_id, category_id) {
     const result = await db.query(`
-        INSERT INTO ORDER_PRODUCTS (order_id, product_id, quantity)
-        VALUES (${order_id}, ${product_id}, ${quantity})
+        UPDATE PRODUCTS
+        SET product_name = "${name}",
+            price = ${price},
+            stock_qty = ${stock},
+            brand_id = ${brand_id},
+            category_id = ${category_id}
+        WHERE product_id = ${product_id}
     `);
 
     return result[0];
 }
+
+
+// ================= DELETE PRODUCT =================
+
+export async function deleteProduct(product_id){
+
+    await db.query(`
+        DELETE FROM ORDER_PRODUCTS WHERE product_id = ${product_id}
+    `);
+
+    await db.query(`
+        DELETE FROM BUILD_INCLUDES WHERE product_id = ${product_id}
+    `);
+
+    const result = await db.query(`
+        DELETE FROM PRODUCTS WHERE product_id = ${product_id}
+    `);
+
+    return result[0];
+}
+
+
+// ================= STOCK =================
+
+export async function updateProductStock(product_id, quantity){
+    const result = await db.query(`
+        UPDATE PRODUCTS 
+        SET stock_qty = stock_qty - ${quantity}
+        WHERE product_id = ${product_id}
+    `);
+
+    return result[0];
+}
+
+
+// ================= CART / ORDER =================
 
 export async function getCart(order_id){
     const cart = await db.query(`
@@ -80,11 +161,22 @@ export async function getCart(order_id){
     return cart[0];
 }
 
-export async function placeOrder(user_id, total_amount) {
+export async function placeOrder(customer_id) {
     const result = await db.query(`
-        INSERT INTO ORDERS (user_id, total_amount, status)
-        VALUES (${user_id}, ${total_amount}, 'processing')
+        INSERT INTO ORDERS (order_date, status, customer_id)
+        VALUES (NOW(), 'placed', ${customer_id})
     `);
+
     return result[0];
 }
 
+
+// ================= BUILDER =================
+
+export async function getProductsByCategory(category_id) {
+    const result = await db.query(`
+        SELECT * FROM PRODUCTS WHERE category_id = ${category_id}
+    `);
+
+    return result[0];
+}

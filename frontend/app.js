@@ -9,7 +9,7 @@ fetch("http://localhost:3100/products")
 
       card.innerHTML = `
         <h3>${p.product_name}</h3>
-        <p>Price: $${p.price}</p>
+        <p>Price: ৳${p.price}</p>
         <p>Stock: ${p.stock_qty}</p>
         <button onclick="viewProduct(${p.product_id})">
           View
