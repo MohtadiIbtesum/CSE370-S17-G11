@@ -1,18 +1,18 @@
 const id = new URLSearchParams(window.location.search).get("id");
 
 fetch(`http://localhost:3100/products/${id}`)
-  .then(res => res.json())
-  .then(data => {
-    const product = data.product[0];
+  .then((res) => res.json())
+  .then((data) => {
+    const product = data.product;
 
     document.getElementById("name").innerText = product.product_name;
     document.getElementById("price").innerText = "Price: " + product.price;
 
     const specList = document.getElementById("specs");
 
-    data.specs.forEach(s => {
+    Object.entries(data.specs).forEach(([key, value]) => {
       const li = document.createElement("li");
-      li.innerText = `${s.spec_name}: ${s.spec_value}`;
+      li.innerText = `${key}: ${value}`;
       specList.appendChild(li);
     });
 
@@ -24,7 +24,7 @@ fetch(`http://localhost:3100/products/${id}`)
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const existing = cart.find(p => p.product_id === product.product_id);
+  const existing = cart.find((p) => p.product_id === product.product_id);
 
   if (existing) {
     existing.quantity += 1;
@@ -33,7 +33,7 @@ function addToCart(product) {
       product_id: product.product_id,
       product_name: product.product_name,
       price: product.price,
-      quantity: 1
+      quantity: 1,
     });
   }
 

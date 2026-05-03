@@ -1,8 +1,14 @@
 const API = "http://localhost:3100";
 
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 async function loadProducts() {
-  const category = document.getElementById("categoryFilter").value;
+  const categoryEl = document.getElementById("category");
+  const container = document.getElementById("products");
+
+  if (!categoryEl || !container) return;
+
+  const category = categoryEl.value;
 
   let url = `${API}/products`;
 
@@ -13,7 +19,6 @@ async function loadProducts() {
   const res = await fetch(url);
   const products = await res.json();
 
-  const container = document.getElementById("products");
   container.innerHTML = "";
 
   products.forEach(p => {
@@ -21,8 +26,12 @@ async function loadProducts() {
 
     div.innerHTML = `
       <h3>${p.product_name}</h3>
-      <p>Price: ৳${p.price}</p>
+      <p>৳ ${p.price}</p>
       <p>Stock: ${p.stock_qty}</p>
+
+      <button onclick="selectProduct(${p.category_id}, ${p.product_id}, '${p.product_name}', ${p.price})">
+        Select
+      </button>
 
       <button onclick="addToCart(${p.product_id}, '${p.product_name}', ${p.price})">
         Add to Cart
@@ -35,136 +44,130 @@ async function loadProducts() {
   });
 }
 
+let build = {
+  cpu: null,
+  gpu: null,
+  motherboard: null,
+  ram: null,
+  storage: null,
+  psu: null,
+  case: null
+};
 
-function getCart() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
+function selectProduct(categoryId, id, name, price) {
+  const item = {
+    product_id: id,
+    product_name: name,
+    price: Number(price),
+    category_id: categoryId
+  };
+
+  if (categoryId == 1) build.cpu = item;
+  if (categoryId == 2) build.gpu = item;
+  if (categoryId == 3) build.motherboard = item;
+  if (categoryId == 4) build.ram = item;
+  if (categoryId == 5) build.storage = item;
+  if (categoryId == 6) build.psu = item;
+  if (categoryId == 7) build.case = item;
+
+  renderBuild();
 }
 
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
+function renderBuild() {
+  const el = document.getElementById("build");
+  if (!el) return;
 
+  el.innerHTML = `
+    <p>CPU: ${build.cpu?.product_name || "Not selected"}</p>
+    <p>GPU: ${build.gpu?.product_name || "Not selected"}</p>
+    <p>Motherboard: ${build.motherboard?.product_name || "Not selected"}</p>
+    <p>RAM: ${build.ram?.product_name || "Not selected"}</p>
+    <p>Storage: ${build.storage?.product_name || "Not selected"}</p>
+    <p>PSU: ${build.psu?.product_name || "Not selected"}</p>
+    <p>Case: ${build.case?.product_name || "Not selected"}</p>
+  `;
+}
 function addToCart(id, name, price) {
-  let cart = getCart();
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const existing = cart.find(item => item.id === id);
+  const existing = cart.find(i => i.product_id === id);
 
   if (existing) {
     existing.quantity++;
   } else {
-    cart.push({ id, name, price, quantity: 1 });
+    cart.push({
+      product_id: id,
+      product_name: name,
+      price: price,
+      quantity: 1
+    });
   }
 
-  saveCart(cart);
-  renderCart();
-}
-
-function removeFromCart(id) {
-  let cart = getCart();
-  cart = cart.filter(item => item.id !== id);
-
-  saveCart(cart);
-  renderCart();
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 function renderCart() {
-  const cart = getCart();
   const container = document.getElementById("cart");
+  if (!container) return;
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   container.innerHTML = "";
 
-  let total = 0;
-
   cart.forEach(item => {
-    total += item.price * item.quantity;
-
     const div = document.createElement("div");
 
     div.innerHTML = `
-      <p>${item.name} x ${item.quantity} - ৳${item.price * item.quantity}</p>
-      <button onclick="removeFromCart(${item.id})">Remove</button>
+      <p>${item.product_name} x ${item.quantity}</p>
+      <p>৳ ${item.price * item.quantity}</p>
     `;
 
     container.appendChild(div);
   });
-
-  document.getElementById("total").textContent = total;
 }
 
+window.checkCompatibility = async function () {
+  const cpu = build.cpu;
+  const gpu = build.gpu;
+  const ram = build.ram;
+  const motherboard = build.motherboard;
 
-
-async function loadBuilderOptions() {
-  try {
-    const cpu = await fetch(`${API}/builder/1`).then(r => r.json());
-    const ram = await fetch(`${API}/builder/3`).then(r => r.json());
-    const gpu = await fetch(`${API}/builder/4`).then(r => r.json());
-    const mobo = await fetch(`${API}/builder/2`).then(r => r.json());
-
-    fillSelect("cpu", cpu);
-    fillSelect("motherboard", mobo);
-    fillSelect("ram", ram);
-    fillSelect("gpu", gpu);
-
-  } catch (err) {
-    console.error("Error loading builder options:", err);
-  }
-}
-
-function fillSelect(id, items) {
-  const select = document.getElementById(id);
-  if (!select) return;
-
-  select.innerHTML = "";
-
-  items.forEach(p => {
-    const option = document.createElement("option");
-    option.value = p.product_id;
-    option.textContent = p.product_name;
-    select.appendChild(option);
-  });
-}
-
-/* =========================
-   COMPATIBILITY CHECK
-========================= */
-
-async function checkCompatibility() {
-
-  const cpuEl = document.getElementById("cpu");
-  const moboEl = document.getElementById("motherboard");
-  const ramEl = document.getElementById("ram");
-  const gpuEl = document.getElementById("gpu");
-  const resultEl = document.getElementById("result");
-
-  if (!cpuEl || !moboEl || !ramEl || !gpuEl) {
-    console.error("Builder elements missing in HTML");
-    return;
-  }
+  const result = document.getElementById("build");
 
   const res = await fetch(`${API}/check-compatibility`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      cpu_id: cpuEl.value,
-      motherboard_id: moboEl.value,
-      ram_id: ramEl.value,
-      gpu_id: gpuEl.value
+      cpu_id: 1,
+      gpu_id: 2,
+      ram_id: 3,
+      motherboard_id: 4
     })
   });
 
   const data = await res.json();
 
-  if (data.compatible) {
-    resultEl.innerHTML = "✅ " + data.message;
-  } else {
-    resultEl.innerHTML = "❌<br>" + data.issues.join("<br>");
-  }
-}
+  result.innerHTML += `<br><br>` + (data.compatible ? "OK" : data.issues.join("<br>"));
+};
 
-/* =========================
-   INIT
-========================= */
+window.addBuildToCart = function () {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-loadProducts();
-renderCart();
-loadBuilderOptions();
+  Object.values(build).forEach(item => {
+    if (item) {
+      cart.push({
+        product_id: item.product_id,
+        product_name: item.product_name,
+        price: item.price,
+        quantity: 1
+      });
+    }
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+  renderCart();
+});

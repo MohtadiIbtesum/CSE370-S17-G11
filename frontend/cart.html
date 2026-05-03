@@ -1,12 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Cart</title>
-</head>
-<body>
-<h1>Your Cart</h1>
 
-<div id="cart"></div>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+    }
+
+    /* NAV */
+    .nav {
+      padding: 15px 30px;
+      background: #111827;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    /* CART ITEM */
+    .item {
+      background: #1f2937;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item h3 {
+      margin: 0;
+    }
+
+    .controls button {
+      padding: 5px 10px;
+      margin: 0 3px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .plus { background: #22c55e; }
+    .minus { background: #f59e0b; }
+    .remove { background: #ef4444; color: white; }
+
+    /* TOTAL BOX */
+    .total {
+      margin-top: 20px;
+      padding: 15px;
+      background: #111827;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    /* CHECKOUT */
+    .checkout {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #38bdf8;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .checkout:hover {
+      background: #0ea5e9;
+    }
+
+    .empty {
+      text-align: center;
+      color: #94a3b8;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="nav">
+  <div>🛒 Cart</div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="builder.html">Builder</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Your Cart</h1>
+  <div id="cart"></div>
+
+  
+
+  <button class="checkout" id="checkoutBtn" onclick="checkout()">
+    Checkout
+  </button>
+</div>
 
 <script src="cart.js"></script>
 

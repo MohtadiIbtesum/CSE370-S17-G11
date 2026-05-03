@@ -1,41 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>PC Store</title>
   <style>
     body {
-      font-family: Arial;
-      padding: 20px;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
     }
 
+    /* NAVBAR */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #111827;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      color: #38bdf8;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      margin-top: 10px;
+    }
+
+    /* CARDS */
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 40px;
     }
 
     .card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: 0.3s;
+      cursor: pointer;
     }
 
-    button {
+    .card:hover {
+      transform: translateY(-5px);
+      background: #334155;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      display: inline-block;
       margin-top: 10px;
-      padding: 5px 10px;
-      cursor: pointer;
+      padding: 8px 15px;
+      background: #38bdf8;
+      color: black;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background: #0ea5e9;
     }
   </style>
 </head>
-
 <body>
 
-<h1>Products</h1>
-<a href="cart.html">Go to Cart</a>
+<!-- NAVBAR -->
+<div class="nav">
+  <div class="logo">💻 PC STORE</div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="builder.html">PC Builder</a>
+    <a href="cart.html">Cart</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
 
-<div id="products" class="grid"></div>
+<!-- HERO -->
+<div class="hero">
+  <h1>Build Your Dream PC</h1>
+  <p>Custom components, smart compatibility, real-time pricing</p>
+</div>
 
-<script src="app.js"></script>
+<!-- FEATURE CARDS -->
+<div class="grid">
+
+  <div class="card">
+    <h3>🛒 Products</h3>
+    <p>Browse all PC components</p>
+    <a class="btn" href="products.html">View</a>
+  </div>
+
+  <div class="card">
+    <h3>🧠 PC Builder</h3>
+    <p>Build a compatible PC setup</p>
+    <a class="btn" href="builder.html">Build</a>
+  </div>
+
+  <div class="card">
+    <h3>🛍 Cart</h3>
+    <p>Review your selected items</p>
+    <a class="btn" href="cart.html">Open</a>
+  </div>
+
+  <div class="card">
+    <h3>⚙ Admin Panel</h3>
+    <p>Manage products & inventory</p>
+    <a class="btn" href="admin.html">Admin</a>
+  </div>
+
+</div>
 
 </body>
 </html>

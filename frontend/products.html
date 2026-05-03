@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Products</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 30px;
+      background: #111827;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #1f2937;
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .price {
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      background: #22c55e;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="nav">
+  <div>💻 PC STORE</div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="builder.html">Builder</a>
+    <a href="cart.html">Cart</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <h1>All Products</h1>
+
+  <!-- FILTER -->
+  <div class="controls">
+    <select id="filter" onchange="renderProducts()">
+      <option value="all">All</option>
+      <option value="1">CPU</option>
+      <option value="2">GPU</option>
+      <option value="3">Motherboard</option>
+      <option value="4">RAM</option>
+      <option value="5">Storage</option>
+      <option value="6">PSU</option>
+      <option value="7">Case</option>
+    </select>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+
+</div>
+
+<script src="products.js"></script>
+
+</body>
+</html>
