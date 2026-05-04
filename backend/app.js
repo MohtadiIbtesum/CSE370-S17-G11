@@ -14,7 +14,8 @@ import {
   checkoutOrder,
   getAllOrders,
   updateOrderStatus,
-  getProductOrderStatus
+  getProductOrderStatus,
+  getUserIdAndPasswordByEmail
 } from './db.js';
 
 const app = express();
@@ -207,6 +208,51 @@ app.put('/admin/orders/:id/status', async (req, res) => {
   }
 });
 
+// LOGIN
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const users = await getUserIdAndPasswordByEmail(email, password);
+
+    console.log("Login attempt:", email, password, "Found:", users);
+
+    if (users.length === 0) {
+      return res.json({ success: false, message: "Invalid credentials" });
+    }
+
+    const user = users[0];
+
+    res.json({
+      success: true,
+      user_id: user.user_id
+    });
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error during login"
+    });
+  }
+});
+// SIGNUP
+app.post('/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const result = await createUser(name, email, password);
+
+    res.json({ success: true, result });
+
+  } catch (err) {
+    console.error("SIGNUP ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error during signup"
+    });
+  }
+});
 // ---------------- ERROR HANDLER ----------------
 
 app.use((err, req, res, next) => {

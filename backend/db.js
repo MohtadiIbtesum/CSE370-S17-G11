@@ -29,6 +29,15 @@ export async function createUser(name, email, password) {
     return result[0];
 }
 
+export async function getUserIdAndPasswordByEmail(email,password) {
+    const user = await db.query(`
+        SELECT user_id, name 
+        FROM USERS 
+        WHERE email = "${email}" AND password = "${password}"
+    `);
+    return user[0];
+}
+
 
 // ================= PRODUCTS =================
 
