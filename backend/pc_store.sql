@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2026 at 10:26 PM
+-- Generation Time: May 04, 2026 at 05:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -117,6 +117,24 @@ CREATE TABLE `customers` (
   `phone_number` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`user_id`, `address`, `phone_number`) VALUES
+(1, 'Dhaka', 123456789),
+(2, 'Chittagong', 123456780),
+(3, 'Sylhet', 123456781),
+(4, 'Khulna', 123456782),
+(5, 'Rajshahi', 123456783),
+(6, 'Barisal', 123456784),
+(7, 'Comilla', 123456785),
+(8, 'Gazipur', 123456786),
+(9, 'Narayanganj', 123456787),
+(10, 'Rangpur', 123456788),
+(11, 'Dhaka', 111111111),
+(13, 'Dhaka', 222222222);
+
 -- --------------------------------------------------------
 
 --
@@ -142,6 +160,17 @@ CREATE TABLE `invoices` (
   `order_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `invoices`
+--
+
+INSERT INTO `invoices` (`invocie_id`, `invoice_date`, `order_id`) VALUES
+(1, '2026-05-04', 1),
+(2, '2026-05-04', 2),
+(3, '2026-05-04', 3),
+(4, '2026-05-04', 4),
+(5, '2026-05-04', 5);
+
 -- --------------------------------------------------------
 
 --
@@ -154,6 +183,17 @@ CREATE TABLE `orders` (
   `status` varchar(50) NOT NULL,
   `customer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `order_date`, `status`, `customer_id`) VALUES
+(1, '2026-05-04', 'Pending', 1),
+(2, '2026-05-04', 'Pending', 1),
+(3, '2026-05-04', 'Pending', 1),
+(4, '2026-05-04', 'Pending', 1),
+(5, '2026-05-04', 'Pending', 1);
 
 -- --------------------------------------------------------
 
@@ -179,6 +219,18 @@ CREATE TABLE `order_products` (
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `order_products`
+--
+
+INSERT INTO `order_products` (`order_id`, `product_id`, `quantity`) VALUES
+(1, 1, 1),
+(2, 1, 1),
+(3, 1, 18),
+(4, 29, 2),
+(5, 20, 1),
+(5, 21, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -200,16 +252,8 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `price`, `stock_qty`, `date_added`, `brand_id`, `category_id`) VALUES
-(0, 'Ryzen 5 5600X', 180.00, 1000, '2026-05-04', 1, 1),
-(1, 'Ryzen 5 5600X', 180.00, 100, '2026-04-27', 1, 1),
-(2, 'Intel i5-12400F', 190.00, 80, '2026-04-27', 2, 1),
-(3, 'ASUS B550-F Gaming', 150.00, 5, '2026-04-27', 3, 2),
-(4, 'MSI B660M Pro', 140.00, 6, '2026-04-27', 4, 2),
-(5, 'Corsair Vengeance 16GB DDR4', 75.00, 15, '2026-04-27', 5, 3),
-(6, 'G.Skill Ripjaws 16GB DDR4', 70.00, 12, '2026-04-27', 6, 3),
-(7, 'NVIDIA RTX 3060', 350.00, 4, '2026-04-27', 7, 4),
-(8, 'Gigabyte RTX 3070', 500.00, 3, '2026-04-27', 8, 4),
-(9, 'Intel i3-12100F', 9500.00, 20, '2026-05-04', 2, 1),
+(1, 'Ryzen 5 5600X', 180.00, 480, '2026-04-27', 1, 1),
+(2, 'Intel i5-12400F', 190.00, 800, '2026-04-27', 2, 1),
 (10, 'Intel i5-12400F', 16500.00, 15, '2026-05-04', 2, 1),
 (11, 'Intel i7-12700K', 32000.00, 10, '2026-05-04', 2, 1),
 (12, 'AMD Ryzen 5 5600', 15000.00, 18, '2026-05-04', 1, 1),
@@ -220,8 +264,8 @@ INSERT INTO `products` (`product_id`, `product_name`, `price`, `stock_qty`, `dat
 (17, 'AMD Ryzen 5 7600', 26000.00, 11, '2026-05-04', 1, 1),
 (18, 'AMD Ryzen 7 7700X', 38000.00, 9, '2026-05-04', 1, 1),
 (19, 'GTX 1660 Super', 18000.00, 10, '2026-05-04', 7, 2),
-(20, 'RTX 3060', 32000.00, 8, '2026-05-04', 7, 2),
-(21, 'RTX 3070', 45000.00, 6, '2026-05-04', 7, 2),
+(20, 'RTX 3060', 32000.00, 7, '2026-05-04', 7, 2),
+(21, 'RTX 3070', 45000.00, 5, '2026-05-04', 7, 2),
 (22, 'RTX 3080', 65000.00, 5, '2026-05-04', 7, 2),
 (23, 'RTX 4060', 38000.00, 12, '2026-05-04', 7, 2),
 (24, 'RTX 4070', 75000.00, 4, '2026-05-04', 7, 2),
@@ -229,7 +273,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `price`, `stock_qty`, `dat
 (26, 'RX 6700 XT', 40000.00, 7, '2026-05-04', 1, 2),
 (27, 'RX 6800 XT', 60000.00, 5, '2026-05-04', 1, 2),
 (28, 'RX 7600', 30000.00, 9, '2026-05-04', 1, 2),
-(29, 'ASUS B660M', 12000.00, 10, '2026-05-04', 3, 3),
+(29, 'ASUS B660M', 12000.00, 8, '2026-05-04', 3, 3),
 (30, 'MSI B550 Tomahawk', 14000.00, 12, '2026-05-04', 4, 3),
 (31, 'Gigabyte B650', 22000.00, 8, '2026-05-04', 8, 3),
 (32, 'ASUS Z790', 35000.00, 6, '2026-05-04', 3, 3),
@@ -258,7 +302,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `price`, `stock_qty`, `dat
 (55, 'Corsair Mid Tower', 4500.00, 12, '2026-05-04', 5, 7),
 (56, 'NZXT H510', 6000.00, 10, '2026-05-04', 3, 7),
 (57, 'Deepcool Case X', 2800.00, 18, '2026-05-04', 4, 7),
-(58, 'Gigabyte Gaming Case', 5000.00, 14, '2026-05-04', 8, 7);
+(58, 'Gigabyte Gaming Case', 5000.00, 140, '2026-05-04', 8, 7);
 
 -- --------------------------------------------------------
 
@@ -285,23 +329,7 @@ INSERT INTO `specifications` (`spec_id`, `spec_name`, `spec_value`, `product_id`
 (5, 'cores', '6', 2),
 (6, 'threads', '12', 2),
 (7, 'socket', 'LGA1700', 2),
-(8, 'tdp', '65', 2),
-(9, 'socket', 'AM4', 3),
-(10, 'chipset', 'B550', 3),
-(11, 'ram_type', 'DDR4', 3),
-(12, 'socket', 'LGA1700', 4),
-(13, 'chipset', 'B660', 4),
-(14, 'ram_type', 'DDR4', 4),
-(15, 'capacity', '16GB', 5),
-(16, 'type', 'DDR4', 5),
-(17, 'speed', '3200MHz', 5),
-(18, 'capacity', '16GB', 6),
-(19, 'type', 'DDR4', 6),
-(20, 'speed', '3600MHz', 6),
-(21, 'vram', '12GB', 7),
-(22, 'tdp', '170', 7),
-(23, 'vram', '8GB', 8),
-(24, 'tdp', '220', 8);
+(8, 'tdp', '65', 2);
 
 -- --------------------------------------------------------
 
@@ -332,7 +360,8 @@ INSERT INTO `users` (`user_id`, `name`, `email`, `password`) VALUES
 (9, 'Tania Sultana', 'tania.sultana@yahoo.com', 'tania123'),
 (10, 'Fahim Karim', 'fahim.karim@outlook.com', 'fksecure456'),
 (11, 'John Doe', 'john@example.com', 'password123'),
-(13, 'John Doe', 'john2@example.com', 'password123');
+(13, 'John Doe', 'john2@example.com', 'password123'),
+(14, 'SupExe', 'mohtadi@gmail.com', '123456');
 
 --
 -- Indexes for dumped tables
@@ -441,7 +470,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
@@ -458,14 +487,14 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `admin_manages`
   ADD CONSTRAINT `admin_manages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`user_id`),
-  ADD CONSTRAINT `admin_manages_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_admin_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `build_includes`
 --
 ALTER TABLE `build_includes`
   ADD CONSTRAINT `build_includes_ibfk_1` FOREIGN KEY (`build_id`) REFERENCES `custom_builds` (`build_id`),
-  ADD CONSTRAINT `build_includes_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_build_includes_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `customers`
@@ -502,8 +531,8 @@ ALTER TABLE `order_build`
 -- Constraints for table `order_products`
 --
 ALTER TABLE `order_products`
-  ADD CONSTRAINT `order_products_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  ADD CONSTRAINT `order_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_order_products_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_products_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
 
 --
 -- Constraints for table `products`
@@ -516,7 +545,7 @@ ALTER TABLE `products`
 -- Constraints for table `specifications`
 --
 ALTER TABLE `specifications`
-  ADD CONSTRAINT `specifications_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_spec_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

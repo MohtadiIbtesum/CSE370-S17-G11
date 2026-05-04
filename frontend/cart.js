@@ -109,7 +109,7 @@ async function checkout() {
     return;
   }
 
-  const customer_id = localStorage.getItem("user_id") || 1;
+  const customer_id = localStorage.getItem("user_id");
 
   try {
     const res = await fetch("http://localhost:3100/checkout", {

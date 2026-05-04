@@ -9,7 +9,7 @@ const db = mysql.createPool({
 }).promise();
 
 
-// ================= USERS =================
+// users
 
 export async function getUsers(){
     const users = await db.query("SELECT * FROM USERS");
@@ -39,7 +39,7 @@ export async function getUserIdAndPasswordByEmail(email,password) {
 }
 
 
-// ================= PRODUCTS =================
+// products
 
 export async function getProducts(){
     const products = await db.query("SELECT * FROM PRODUCTS");
@@ -68,7 +68,7 @@ export async function getProduct(id){
 }
 
 
-// ================= ADMIN PRODUCTS =================
+// admin products
 
 export async function createProduct(name, price, stock, brand_id, category_id) {
     const [rows] = await db.query(`
@@ -114,7 +114,7 @@ export async function readProductById(product_id) {
 }
 
 
-// ================= UPDATE =================
+// update product
 
 export async function updateProduct(product_id, name, price, stock, brand_id, category_id) {
     const result = await db.query(`
@@ -131,7 +131,7 @@ export async function updateProduct(product_id, name, price, stock, brand_id, ca
 }
 
 
-// ================= DELETE PRODUCT =================
+// delete product
 
 export async function deleteProduct(product_id){
 
@@ -150,8 +150,7 @@ export async function deleteProduct(product_id){
     return result[0];
 }
 
-
-// ================= STOCK =================
+// stock
 
 export async function updateProductStock(product_id, quantity){
     const result = await db.query(`
@@ -164,7 +163,7 @@ export async function updateProductStock(product_id, quantity){
 }
 
 
-// ================= CART / ORDER =================
+// cart & orders
 
 export async function getCart(order_id){
     const cart = await db.query(`
@@ -222,7 +221,6 @@ export async function checkoutOrder(customer_id, cartItems) {
 }
 
 
-// ================= ADMIN ORDERS =================
 
 export async function getAllOrders() {
     const orders = await db.query(`
@@ -264,7 +262,6 @@ export async function getProductOrderStatus() {
     return result[0];
 }
 
-// ================= BUILDER =================
 
 export async function getProductsByCategory(category_id) {
     const result = await db.query(`

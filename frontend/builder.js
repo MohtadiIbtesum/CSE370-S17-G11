@@ -99,7 +99,7 @@ function calculateTotals() {
     }
   });
 
-  const recommendedPSU = Math.ceil((totalPower * 1.5) / 50) * 50;
+ 
 
   const el = document.getElementById("totals");
   if (!el) return;
@@ -107,7 +107,6 @@ function calculateTotals() {
   el.innerHTML = `
     <p>Total Price: ৳ ${totalPrice}</p>
     <p>Total Power: ${totalPower}W</p>
-    <p>Recommended PSU: ${recommendedPSU}W</p>
   `;
 }
 
@@ -153,6 +152,22 @@ function addToCart(id, name, price) {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function checkCompatibility() {
+  fetch(`${API}/check-compatibility`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(build)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.compatible) {
+      alert("Selected components are not compatible.");
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
