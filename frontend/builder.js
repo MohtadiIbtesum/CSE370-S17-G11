@@ -2,6 +2,13 @@ const API = "http://localhost:3100";
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+let build = {
+  cpu: null,
+  gpu: null,
+  motherboard: null,
+  ram: null
+};
+
 async function loadProducts() {
   const categoryEl = document.getElementById("category");
   const container = document.getElementById("products");
@@ -24,53 +31,49 @@ async function loadProducts() {
   products.forEach(p => {
     const div = document.createElement("div");
 
+    div.className = "product";
+
     div.innerHTML = `
       <h3>${p.product_name}</h3>
       <p>৳ ${p.price}</p>
       <p>Stock: ${p.stock_qty}</p>
 
-      <button onclick="selectProduct(${p.category_id}, ${p.product_id}, '${p.product_name}', ${p.price})">
+      <button onclick="selectProduct(${p.category_id}, ${p.product_id})">
         Select
       </button>
 
       <button onclick="addToCart(${p.product_id}, '${p.product_name}', ${p.price})">
         Add to Cart
       </button>
-
-      <hr>
     `;
 
     container.appendChild(div);
   });
 }
 
-let build = {
-  cpu: null,
-  gpu: null,
-  motherboard: null,
-  ram: null,
-  storage: null,
-  psu: null,
-  case: null
-};
+async function selectProduct(categoryId, id) {
+  const res = await fetch(`${API}/products/${id}`);
+  const data = await res.json();
 
-function selectProduct(categoryId, id, name, price) {
+  const product = data.product;
+  const specs = data.specs;
+
   const item = {
-    product_id: id,
-    product_name: name,
-    price: Number(price),
-    category_id: categoryId
+    id: product.product_id,
+    name: product.product_name,
+    price: Number(product.price),
+    tdp: Number(specs.tdp || 0),
+    socket: specs.socket || null,
+    ram_type: specs.ram_type || null
   };
 
   if (categoryId == 1) build.cpu = item;
   if (categoryId == 2) build.gpu = item;
   if (categoryId == 3) build.motherboard = item;
   if (categoryId == 4) build.ram = item;
-  if (categoryId == 5) build.storage = item;
-  if (categoryId == 6) build.psu = item;
-  if (categoryId == 7) build.case = item;
 
   renderBuild();
+  calculateTotals();
 }
 
 function renderBuild() {
@@ -78,15 +81,61 @@ function renderBuild() {
   if (!el) return;
 
   el.innerHTML = `
-    <p>CPU: ${build.cpu?.product_name || "Not selected"}</p>
-    <p>GPU: ${build.gpu?.product_name || "Not selected"}</p>
-    <p>Motherboard: ${build.motherboard?.product_name || "Not selected"}</p>
-    <p>RAM: ${build.ram?.product_name || "Not selected"}</p>
-    <p>Storage: ${build.storage?.product_name || "Not selected"}</p>
-    <p>PSU: ${build.psu?.product_name || "Not selected"}</p>
-    <p>Case: ${build.case?.product_name || "Not selected"}</p>
+    <p>CPU: ${build.cpu?.name || "Not selected"}</p>
+    <p>GPU: ${build.gpu?.name || "Not selected"}</p>
+    <p>Motherboard: ${build.motherboard?.name || "Not selected"}</p>
+    <p>RAM: ${build.ram?.name || "Not selected"}</p>
   `;
 }
+
+function calculateTotals() {
+  let totalPrice = 0;
+  let totalPower = 0;
+
+  Object.values(build).forEach(part => {
+    if (part) {
+      totalPrice += part.price;
+      totalPower += part.tdp;
+    }
+  });
+
+  const recommendedPSU = Math.ceil((totalPower * 1.5) / 50) * 50;
+
+  const el = document.getElementById("totals");
+  if (!el) return;
+
+  el.innerHTML = `
+    <p>Total Price: ৳ ${totalPrice}</p>
+    <p>Total Power: ${totalPower}W</p>
+    <p>Recommended PSU: ${recommendedPSU}W</p>
+  `;
+}
+
+function addBuildToCart() {
+  let totalPrice = 0;
+
+  Object.values(build).forEach(part => {
+    if (part) totalPrice += part.price;
+  });
+
+  if (totalPrice === 0) {
+    alert("Select components first");
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push({
+    product_id: Date.now(),
+    product_name: "Custom PC Build",
+    price: totalPrice,
+    quantity: 1
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Build added to cart");
+}
+
 function addToCart(id, name, price) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -106,68 +155,6 @@ function addToCart(id, name, price) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function renderCart() {
-  const container = document.getElementById("cart");
-  if (!container) return;
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  container.innerHTML = "";
-
-  cart.forEach(item => {
-    const div = document.createElement("div");
-
-    div.innerHTML = `
-      <p>${item.product_name} x ${item.quantity}</p>
-      <p>৳ ${item.price * item.quantity}</p>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-window.checkCompatibility = async function () {
-  const cpu = build.cpu;
-  const gpu = build.gpu;
-  const ram = build.ram;
-  const motherboard = build.motherboard;
-
-  const result = document.getElementById("build");
-
-  const res = await fetch(`${API}/check-compatibility`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      cpu_id: 1,
-      gpu_id: 2,
-      ram_id: 3,
-      motherboard_id: 4
-    })
-  });
-
-  const data = await res.json();
-
-  result.innerHTML += `<br><br>` + (data.compatible ? "OK" : data.issues.join("<br>"));
-};
-
-window.addBuildToCart = function () {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  Object.values(build).forEach(item => {
-    if (item) {
-      cart.push({
-        product_id: item.product_id,
-        product_name: item.product_name,
-        price: item.price,
-        quantity: 1
-      });
-    }
-  });
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-};
-
 document.addEventListener("DOMContentLoaded", () => {
   loadProducts();
-  renderCart();
 });

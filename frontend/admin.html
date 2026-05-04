@@ -1,42 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Panel</title>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+    background: #111827;
+  }
+
+  .nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+  }
+
+  .container {
+    padding: 30px;
+  }
+
+  h1, h2 {
+    margin-top: 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .panel {
+    background: #1f2937;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    background: #111827;
+    color: white;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .btn-green { background: #22c55e; }
+  .btn-blue { background: #38bdf8; }
+  .btn-red { background: #ef4444; }
+
+  .product, .order {
+    background: #111827;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+  }
+
+  .badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 5px;
+  }
+</style>
 </head>
+
 <body>
 
-<h1>Admin Panel</h1>
+<div class="nav">
+  <div>⚙️ Admin Panel</div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="builder.html">Builder</a>
+    <a href="cart.html">Cart</a>
+  </div>
+</div>
 
-<h2>Add Product</h2>
-<form id="productForm">
-  <input type="text" id="name" placeholder="Name"><br>
-  <input type="number" id="price" placeholder="Price"><br>
-  <input type="number" id="stock" placeholder="Stock"><br>
-  <input type="number" id="brand_id" placeholder="Brand ID"><br>
-  <input type="number" id="category_id" placeholder="Category ID"><br>
-  <button type="submit">Add</button>
-</form>
-<h2>Edit Product</h2>
+<div class="container">
 
-<form id="editForm">
-  <input type="hidden" id="edit_id">
+  <div class="grid">
 
-  <input type="text" id="edit_name" placeholder="Name"><br>
-  <input type="number" id="edit_price" placeholder="Price"><br>
-  <input type="number" id="edit_stock" placeholder="Stock"><br>
-  <input type="number" id="edit_brand_id" placeholder="Brand ID"><br>
-  <input type="number" id="edit_category_id" placeholder="Category ID"><br>
+    <!-- ADD PRODUCT -->
+    <div class="panel">
+      <h2>Add Product</h2>
 
-  <button type="submit">Update Product</button>
-</form>
+      <form id="productForm">
+        <input type="text" id="name" placeholder="Product Name">
+        <input type="number" id="price" placeholder="Price">
+        <input type="number" id="stock" placeholder="Stock">
+        <input type="number" id="brand_id" placeholder="Brand ID">
+        <input type="number" id="category_id" placeholder="Category ID">
+        <button class="btn-green" type="submit">Add Product</button>
+      </form>
+    </div>
 
-<hr>
-<hr>
+    <!-- EDIT PRODUCT -->
+    <div class="panel">
+      <h2>Edit Product</h2>
 
-<h2>Products</h2>
-<button onclick="loadProducts()">Refresh</button>
+      <form id="editForm">
+        <input type="hidden" id="edit_id">
 
-<div id="products"></div>
+        <input type="text" id="edit_name" placeholder="Name">
+        <input type="number" id="edit_price" placeholder="Price">
+        <input type="number" id="edit_stock" placeholder="Stock">
+        <input type="number" id="edit_brand_id" placeholder="Brand ID">
+        <input type="number" id="edit_category_id" placeholder="Category ID">
+
+        <button class="btn-blue" type="submit">Update Product</button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="panel">
+    <h2>Products</h2>
+    <button class="btn-blue" onclick="loadProducts()">Refresh</button>
+    <div id="products"></div>
+  </div>
+
+  <!-- ORDERS -->
+  <div class="panel">
+    <h2>Orders</h2>
+    <button class="btn-blue" onclick="loadOrders()">Refresh Orders</button>
+    <div id="orders"></div>
+  </div>
+
+  <!-- PRODUCT ORDER STATUS -->
+  <div class="panel">
+    <h2>Product Order Status</h2>
+    <button class="btn-blue" onclick="loadProductOrderStatus()">Refresh</button>
+    <div id="productOrderStatus"></div>
+  </div>
+
+</div>
 
 <script src="admin.js"></script>
 
